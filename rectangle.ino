@@ -11,7 +11,6 @@ const int RIGHT_IN2 = 11;
 const int trigPin = 7;
 const int echoPin = 12;
 
-// === Movement Timing ===
 // Distance in cm
 const int SHORT_SIDE_CM = 25;
 const int LONG_SIDE_CM = 40;
