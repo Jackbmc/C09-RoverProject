@@ -1,0 +1,103 @@
+// Pin definitions
+const int enableMotor1 = 3;    // Enable for motor 1 (PWM pin)
+const int in1 = 8;             // Input 1 for motor 1
+const int in2 = 9;             // Input 2 for motor 1
+const int enableMotor2 = 4;    // Enable for motor 2
+const int in3 = 10;            // Input 3 for motor 2
+const int in4 = 11;            // Input 4 for motor 2
+
+const int trigPin = 7;         // Ultrasonic sensor trigger pin
+const int echoPin = 12;        // Ultrasonic sensor echo pin
+
+// Constants
+const int safeDistance = 10;   // Safe distance in centimeters
+const int motor1Speed = 215;   // Speed for motor 1 (0-255)
+const int motor2Speed = 255;   // Higher speed for the weaker motor 2 (0-255)
+
+void setup() {
+  // Set up motor control pins
+  pinMode(enableMotor1, OUTPUT);
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(enableMotor2, OUTPUT);
+  pinMode(in3, OUTPUT);
+  pinMode(in4, OUTPUT);
+  
+  // Set up ultrasonic sensor pins
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  
+  // Initialize serial communication (for debugging)
+  Serial.begin(9600);
+  Serial.println("Rover initialized");
+}
+
+void loop() {
+  // Measure distance
+  float distance = getDistance();
+  
+  // Print distance to serial monitor
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+  
+  // Check if path is clear
+  if (distance > safeDistance) {
+    // Move forward
+    moveForward();
+    Serial.println("Moving forward");
+  } else {
+    // Stop
+    stopMotors();
+    Serial.println("Obstacle detected - stopping");
+  }
+  
+  // Short delay before next reading
+  delay(100);
+}
+
+// Function to get distance from ultrasonic sensor
+float getDistance() {
+  // Clear the trigger pin
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  
+  // Send a 10μs pulse to trigger
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+  // Read echo pulse duration
+  float duration = pulseIn(echoPin, HIGH);
+  
+  // Calculate distance in centimeters
+  float distance = (duration * 0.0343) / 2;
+  
+  return distance;
+}
+
+// Function to move forward
+void moveForward() {
+  // Motor 1
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  analogWrite(enableMotor1, motor1Speed);  // Using motor1Speed
+  
+  // Motor 2
+  digitalWrite(in3, HIGH);
+  digitalWrite(in4, LOW);
+  analogWrite(enableMotor2, motor2Speed);  // Using motor2Speed
+}
+
+// Function to stop motors
+void stopMotors() {
+  // Motor 1
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, LOW);
+  analogWrite(enableMotor1, 0);
+  
+  // Motor 2
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, LOW);
+  analogWrite(enableMotor2, 0);
+}
