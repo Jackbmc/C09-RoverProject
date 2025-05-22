@@ -119,10 +119,6 @@ void updateCurrentAngleZ() {
 
   // Integrate to get angle
   currentAngleZ += angularVelocityZ * deltaTime;
-
-  // Optional: Normalize angle to a range like 0-360 or -180 to 180 if preferred,
-  // but for difference calculations, cumulative angle works too.
-  // currentAngleZ = fmod(currentAngleZ, 360.0);
 }
 
 float getDistanceCm() {
@@ -269,9 +265,6 @@ void mazeLogic() {
     } else {
         Serial.println("Decision: Dead end. Turning Around (180 deg).");
         performTurn(180.0);    // Turn around
-        // Optionally, move forward after turning if stuck in a 1-unit dead-end
-        // If the space is very tight, just turning might be enough and next scan will decide.
-        // moveForwardPID(); 
     }
     delay(100); // Short delay after an action sequence
 }
